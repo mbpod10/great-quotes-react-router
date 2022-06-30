@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import QuoteForm from "../quotes/QuoteForm"
+import { useHistory } from 'react-router-dom'
 
 const NewQuote = () => {
 
   const [isLoading, setIsLoading] = useState(false)
-
+  const history = useHistory()
 
   const onAddQuote = (params) => {
     // setIsLoading(true)
@@ -12,8 +13,9 @@ const NewQuote = () => {
     // let newId = (Math.random() + 1).toString(36).substring(7)
     // newQuote.id = newId
     // setQuotes(prevState => [...prevState, newQuote])
-    // history.push(`quotes/${newId}`)
     // setIsLoading(false)
+    history.push(`/quotes`)
+
   }
 
   return (

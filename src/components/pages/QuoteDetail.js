@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams, Route } from 'react-router-dom'
 import Comments from "../comments/Comments"
 import HighlightedQuote from "../quotes/HighlightedQuote"
+import NoQuotesFound from "../quotes/NoQuotesFound"
 
 const QuoteDetail = () => {
 
@@ -12,11 +13,12 @@ const QuoteDetail = () => {
 
   const params = useParams()
 
-  const quoteDetail = quotes.find(quote => quote.id === params.id)
+  const quote = quotes.find(quote => quote.id === params.id)
 
   return (
     <>
-      <HighlightedQuote text={quoteDetail.text} author={quoteDetail.author} />
+      {quote && <HighlightedQuote text={quote.text} author={quote.author} />}
+      {!quote && <NoQuotesFound />}
       <Route path={`/quotes/${params.id}/comments`} >
         <Comments />
       </Route>

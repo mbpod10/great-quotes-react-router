@@ -4,6 +4,7 @@ import QuoteDetail from "./components/pages/QuoteDetail";
 import AllQuotes from "./components/pages/AllQuotes";
 import NewQuote from "./components/pages/NewQuote";
 import Layout from "./components/layout/Layout";
+import NotFound from "./components/pages/NotFound";
 
 function App() {
 
@@ -20,8 +21,10 @@ function App() {
           <QuoteDetail id={1} author="Hardbard" text="Let Him Go" />
         </Route>
         <Route path="/new-quote" >
-          {/* <NewQuote onAddQuote={onAddQuote} isLoading={isLoading} /> */}
           <NewQuote />
+        </Route>
+        <Route path='*'>
+          <NotFound />
         </Route>
       </Switch>
     </Layout>
