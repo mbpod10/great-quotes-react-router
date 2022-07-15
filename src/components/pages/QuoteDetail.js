@@ -1,30 +1,52 @@
-import React from 'react'
-import { useParams, Route, Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { useParams, Route, Link, useRouteMatch } from 'react-router-dom'
 import Comments from "../comments/Comments"
 import HighlightedQuote from "../quotes/HighlightedQuote"
 import NoQuotesFound from "../quotes/NoQuotesFound"
 
+import useHttp from '../../hooks/use-http'
+import { getSingleQuote } from '../../lib/api'
+import LoadingSpinner from '../UI/LoadingSpinner'
+
 const QuoteDetail = () => {
-
-  const quotes = [
-    { id: "q1", author: 'Harbard', text: "Incredible Quote" },
-    { id: "q2", author: 'Odin', text: "Let Him Go" },
-  ]
-
+  const match = useRouteMatch()
   const params = useParams()
+  const { id } = params
 
-  const quote = quotes.find(quote => quote.id === params.id)
+  const { sendRequest, status, data: loadedQuote, error } = useHttp(getSingleQuote, true)
+
+  useEffect(() => {
+    sendRequest(id)
+  }, [sendRequest, id])
+
+  if (status === 'pending') {
+    return (
+      <div className='centered'>
+        <LoadingSpinner />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <p className='centered'>{error}</p>
+  }
 
   return (
     <>
-      {quote && <HighlightedQuote text={quote.text} author={quote.author} />}
-      <Route path={`/quotes/${params.id}`} exact>
-        <div className='centered'>
-          <Link className='btn--flat' to={`/quotes/${params.id}/comments`}>View Comments</Link>
-        </div>
-      </Route>
-      {!quote && <NoQuotesFound />}
-      <Route path={`/quotes/${params.id}/comments`} >
+      {loadedQuote.text &&
+        (
+          <>
+            <HighlightedQuote text={loadedQuote.text} author={loadedQuote.author} />
+            <Route path={`/quotes/${params.id}`} exact>
+              <div className='centered'>
+                <Link className='btn--flat' to={`/quotes/${params.id}/comments`}>View Comments</Link>
+              </div>
+            </Route>
+          </>
+        )
+      }
+      {!loadedQuote.text && <NoQuotesFound />}
+      <Route path={`${match.path}/comments`} >
         <Comments />
       </Route>
     </>
